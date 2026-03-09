@@ -343,7 +343,7 @@ package struct ReorderableElement<Position: AxisPosition, Element: Identifiable,
 extension View {
     @ViewBuilder
     func applySensoryFeedback<T: Equatable>(feedback: Any, trigger: T) -> some View {
-        if #available(iOS 17.0, visionOS 26.0 *) {
+        if #available(iOS 17.0, visionOS 26.0, macOS 26) {
             // Cast 'feedback' to SensoryFeedback only if available
             self.sensoryFeedback(feedback as! SensoryFeedback, trigger: trigger)
         }
