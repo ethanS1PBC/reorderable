@@ -100,7 +100,7 @@ package struct ReorderableStack<Axis: ContainerAxis, Data: RandomAccessCollectio
         .onDisappear {
           positions.removeValue(forKey: datum.id)
         }
-        .sensoryFeedback(trigger: currentIndex) { old, new in
+        .applySensoryFeedback(trigger: currentIndex) { old, new in
           guard !feedbackDisabled else { return nil }
           switch(old, new) {
             case (.none, .some(_)): return .selection
@@ -338,4 +338,20 @@ package struct ReorderableElement<Position: AxisPosition, Element: Identifiable,
       })
       .dragHandle()
   }
+}
+
+extension View {
+    @ViewBuilder
+    func applySensoryFeedback<T: Equatable>(feedback: Any, trigger: T) -> some View {
+        if #available(iOS 17.0, *) {
+            // Cast 'feedback' to SensoryFeedback only if available
+            self.sensoryFeedback(feedback as! SensoryFeedback, trigger: trigger)
+        } else {
+            // Fallback: Manually trigger UIKit haptics when the value changes
+            self.onChange(of: trigger) { _ in
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+            }
+        }
+    }
 }
