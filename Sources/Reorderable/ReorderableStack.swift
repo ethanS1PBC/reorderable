@@ -100,15 +100,6 @@ package struct ReorderableStack<Axis: ContainerAxis, Data: RandomAccessCollectio
         .onDisappear {
           positions.removeValue(forKey: datum.id)
         }
-        .applySensoryFeedback(trigger: currentIndex) { old, new in
-          guard !feedbackDisabled else { return nil }
-          switch(old, new) {
-            case (.none, .some(_)): return .selection
-            case (.some(_), .none): return .selection
-            case (.some(_), .some(_)): return .impact(weight: .light)
-            default: return nil
-          }
-        }
     }
   }
   
@@ -338,14 +329,4 @@ package struct ReorderableElement<Position: AxisPosition, Element: Identifiable,
       })
       .dragHandle()
   }
-}
-
-extension View {
-    @ViewBuilder
-    func applySensoryFeedback<T: Equatable>(feedback: Any, trigger: T) -> some View {
-        if #available(iOS 17.0, visionOS 26.0, macOS 26, *) {
-            // Cast 'feedback' to SensoryFeedback only if available
-            self.sensoryFeedback(feedback as! SensoryFeedback, trigger: trigger)
-        }
-    }
 }
