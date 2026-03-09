@@ -343,15 +343,9 @@ package struct ReorderableElement<Position: AxisPosition, Element: Identifiable,
 extension View {
     @ViewBuilder
     func applySensoryFeedback<T: Equatable>(feedback: Any, trigger: T) -> some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.0, visionOS 26.0 *) {
             // Cast 'feedback' to SensoryFeedback only if available
             self.sensoryFeedback(feedback as! SensoryFeedback, trigger: trigger)
-        } else {
-            // Fallback: Manually trigger UIKit haptics when the value changes
-            self.onChange(of: trigger) { _ in
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
-            }
         }
     }
 }
